@@ -16,6 +16,12 @@ public class Luancher : MonoBehaviourPunCallbacks
         "The maximum number of players per room. When a room is full, it can't be joined by new players, and so new room will be created")]
     [SerializeField]
     private byte maxPlayersPerRooms = 4;
+    [Tooltip("The Ui Panel to let the user enter name, connect and play")]
+    [SerializeField]
+    private GameObject controlPanel;
+    [Tooltip("The UI Label to inform the user that the connection is in progress")]
+    [SerializeField]
+    private GameObject progressLabel;
 
     #endregion
 
@@ -33,6 +39,11 @@ public class Luancher : MonoBehaviourPunCallbacks
 
     #endregion
 
+    private void Start()
+    {
+        progressLabel.SetActive(false);
+        controlPanel.SetActive(true);
+    }
 
     #region Public Methods
 
@@ -43,6 +54,8 @@ public class Luancher : MonoBehaviourPunCallbacks
     /// </summary>
     public void Connect()
     {
+        progressLabel.SetActive(true);
+        controlPanel.SetActive(false);
         // we check if we are connected or not, we join if we are , else we initiate the connection to the server.
         if (PhotonNetwork.IsConnected)
         {
@@ -67,6 +80,8 @@ public class Luancher : MonoBehaviourPunCallbacks
 
     public override void OnDisconnected(DisconnectCause cause)
     {
+        progressLabel.SetActive(false);
+        controlPanel.SetActive(true);
         Debug.LogWarningFormat("PUN Basics Tutorial/Launcher: OnDisconnected() was called by PUN with reason {0}",
             cause);
     }
@@ -76,10 +91,16 @@ public class Luancher : MonoBehaviourPunCallbacks
         Debug.Log(
             "PUN Basics Tutorial/Launcher:OnJoinRandomFailed() was called by PUN. No random room available, so we create one.\nCalling: PhotonNetwork.CreateRoom");
         PhotonNetwork.CreateRoom(null, new RoomOptions { MaxPlayers = maxPlayersPerRooms });
+
     }
 
     public override void OnJoinedRoom()
     {
         Debug.Log("PUN Basics Tutorial/Launcher: OnJoinedRoom() called by PUN. Now this client is in a room.");
+        if (PhotonNetwork.CurrentRoom.PlayerCount == 1)
+        {
+            Debug.Log("We load the 'Room for 1' ");
+            PhotonNetwork.LoadLevel("Room for 1");
+        }
     }
 }
