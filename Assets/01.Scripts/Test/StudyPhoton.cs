@@ -6,8 +6,7 @@ using Photon.Realtime;
 using Unity.Mathematics;
 using UnityEngine;
 
-public class StudyPhoton : MonoBehaviourPunCallbacks
-{
+public class StudyPhoton : MonoBehaviourPunCallbacks{
     public void StartMulty()
     {
         PhotonNetwork.ConnectUsingSettings();
@@ -16,7 +15,7 @@ public class StudyPhoton : MonoBehaviourPunCallbacks
 
     public override void OnConnectedToMaster()
     {
-        PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions() { MaxPlayers = 2 }, null );
+        PhotonNetwork.JoinOrCreateRoom("Room", new RoomOptions(){ MaxPlayers = 2 }, null);
         Debug.Log("방생성");
     }
 
